@@ -5,9 +5,14 @@ Code adapted from that for two channels by Tim Perkins
 
 #include <Wire.h>
 #include <TimeLib.h>
-#include <DS1307RTC.h>
+#include <DS1307RTC.h>// I am using a DS3231 RTC, but this library and related code works
 
 // You need to set these to the pins you will use
+// I have twoo channels of royal blue  (RB1 and RB2), true blue (TB), neutral white (NW), and lime 
+// 3 watt LEDs from Steve's LED (https://www.stevesleds.com/). The code also includes capability
+// for a fan to turn on, although I am not actually using a fan since the heat sink 
+// (https://www.stevesleds.com/HD-Heatsink--48-1220mm-Length_p_393.html) does not get hot to the touch, 
+// even at 2 pm when my lights ramp up to the brightest setting (see PWM in the loop function).
 const int const_RB1_pin  = 5;
 const int const_RB2_pin = 6;
 const int const_TB_pin = 9;
@@ -55,6 +60,11 @@ void setup() {
 }
 void loop() {
   // Convert the time into a usable number - 8:15 am is 815, ten thirty pm is 2230
+  // Adapt the code below to fit your lighting schedule; mine turn on at 9:00 am (bottom of this section)
+  // with dimly lit royal blue LEDs, followed by other channels turning on and increased brightness later in the day.
+  // Off corresponds to a PWM of 0; full brightness would be 255 PWM, so at 110 PWM, my LEDs are running at less than
+  // 50%, with LEDs mounted end to end on the heat sync (about 60 LED's mounted linearly to span the 48 inch length
+  // of my 55 gallon tank, which is enough for LPS, montiporas, bubble tip anenomes, and a couple of clams.
   current_time = (hour() * 100) + minute();
   if (current_time >= 2030) {
     RB1_target_PWM = 0;
